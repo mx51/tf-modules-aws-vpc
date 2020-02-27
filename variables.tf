@@ -11,13 +11,13 @@ variable "vpc_cidr_block" {
 variable "vpc_endpoints" {
   type        = list(string)
   description = "List of VPC Interface endpoints"
-  default = []
+  default     = []
 }
 
 variable "vpc_gatewayendpoints" {
   type        = list(string)
   description = "List of VPC Gateway endpoints"
-  default = []
+  default     = []
 }
 
 variable "vpc_enable_dns_support" {
@@ -81,7 +81,7 @@ variable "enable_internet_gateway" {
 
 variable "enable_nat_gateway" {
   type        = bool
-  description = "Create nat gateways in the VPC,"
+  description = "Create nat gateways in the VPC"
   default     = true
 }
 
@@ -199,6 +199,11 @@ variable "nacl_secure_custom" {
   default     = null
 }
 
+variable "enable_db_secure_subnet_group" {
+  type        = bool
+  description = "Create a RDS DB subnet group"
+  default     = false
+}
 
 variable "tags" {
   type        = map(string)

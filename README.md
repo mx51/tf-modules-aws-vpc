@@ -10,6 +10,7 @@ This module deploys a 3-tier VPC. The following resources are managed:
 - Virtual Private Gateway
 - DHCP Option Sets
 - VPC Endpoints
+- DB Subnet Group
 
 Tags on VPCs/Subnets are currently set to ignore changes. This is to support EKS clusters.
 
@@ -65,6 +66,7 @@ list(object({
 | nacl_public_custom | List of custom nacls to apply to the public tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |
 | nacl_private_custom | List of custom nacls to apply to the private tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |
 | nacl_secure_custom | List of custom nacls to apply to the secure tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |
+| enable_db_secure_subnet_group | Create a DB subnet group  | bool | `false` | no |
 | tags | Tags applied to all resources | map(string) | `{}` | no |
 
 ## Outputs
