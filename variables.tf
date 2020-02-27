@@ -198,16 +198,11 @@ variable "nacl_secure_custom" {
   description = "List of custom nacls to apply to the secure tier"
   default     = null
 }
+
 variable "enable_db_secure_subnet_group" {
   type        = bool
   description = "Create a RDS DB subnet group"
   default     = false
-}
-
-variable "db_secure_subnet_group_name" {
-  type        = string
-  description = "Name of the database subnet group"
-  default     = null
 }
 
 variable "tags" {

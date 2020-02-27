@@ -67,7 +67,6 @@ list(object({
 | nacl_private_custom | List of custom nacls to apply to the private tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |
 | nacl_secure_custom | List of custom nacls to apply to the secure tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |
 | enable_db_secure_subnet_group | Create a DB subnet group  | bool | `false` | no |
-| db_secure_subnet_group_name | Name of the RDS DB subnet group | string | `null` | no |
 | tags | Tags applied to all resources | map(string) | `{}` | no |
 
 ## Outputs

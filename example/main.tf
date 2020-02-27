@@ -4,7 +4,7 @@ module "vpc" {
   vpc_name       = "cmdlab-tf"
   vpc_cidr_block = "10.111.0.0/16"
 
-  availability_zones = ["ap-southeast-1a", "ap-southeast-1b", "ap-southeast-1c"]
+  availability_zones = ["ap-southeast-2a", "ap-southeast-2b", "ap-southeast-2c"]
 
   vpc_enable_dns_support   = true
   vpc_enable_dns_hostnames = true
@@ -25,7 +25,8 @@ module "vpc" {
     }
   ]
   enable_db_secure_subnet_group = true
-  db_secure_subnet_group_name   = "dbsubnetgroupname"
+  vpc_endpoints                 = ["kms", "cloudtrail"]
+  vpc_gatewayendpoints          = ["s3"]
 
   tags = {
     Owner      = "Foo"
