@@ -78,3 +78,35 @@ list(object({
 
 ## Development
 Most of the Terraform ecosystem does not yet support 0.12. You need to manually update Inputs/Outputs when you add variables until terraform-docs supports 0.12.
+
+## Network Access Controls Lists
+
+Network Access Control Lists (NACL) provide an additional layer of security by providing subnet level firewalling. NACL's will be used to ensure that the defence in depth network architecture is enforced. NACL's are applied in order of rule number with the processing stopping at the first matched rule, which means that a standardised rule numbering is required to ensure new rules can be added as required.
+
+NACL's are stateless, which means return traffic is not implicitly allowed and both inbound and outbound traffic flows must be defined for all communication. There are limits on the number of NACL rules which can be defined on a single subnet, additionally NACL's can add a layer of complexity to the environment as firewall rules need to be managed at both the subnet and host layer. To reduce complexity, it is recommended to apply a standard NACL policy this defines the network tier level access and does not got down to the host / port level to ensure manageability and reduce the risk of running into rule count limits. 
+
+### NACL Key:
+
+| Key |	Block |	Allow |	Source | Traffic | Description |
+|-----|-------|-------|--------|---------|-------------|
+| 1XX	| 100-149	| 150-199	| IP	| Port | Local VPC Traffic |
+| 2XX	| 200-249	| 250-299	| IP	| Port Range |
+| 3XX	| 300-349	| 350-399	| IP	| ANY |
+| 4XX	| 400-449	| 450-499	| IP Range | Port |
+| 5XX	| 500-549	| 550-599	| IP Range | Port Range |
+| 6XX	| 600-649	| 650-699	| IP Range	| Any |
+| 7XX	| 700-749	| 750-799	| Peered IP	| Port | Peered VPC, VPN or direct connect traffic |
+| 8XX	| 800-849	| 850-899	| Peered IP	| Port Range |
+| 9XX	| 900-949	| 950-999	| Peered IP	| Any |
+| 10XX	| 1000-1049	| 1050-1099	| Peered IP Range |	Port |
+| 11XX	| 1100-1149	| 1150-1199	| Peered IP Range |	Port Range |
+| 12XX	| 1200-1249	| 1250-1299	| Peered IP Range |	Any |
+| 13XX	| 1300-1349	| 1350-1399	| External IP |	Port | Known third party network
+| 14XX	| 1400-1449	| 1450-1499	| External IP |	Port Range |
+| 15XX	| 1500-1549	| 1550-1599	| External IP |	Any |
+| 16XX	| 1600-1649	| 1650-1699	| External IP Range	| Port
+| 17XX	| 1700-1749	| 1750-1799	| External IP Range	| Port Range |
+| 18XX	| 1800-1849	| 1850-1899	| External IP Range	| Any |
+| 19XX	| 1900-1949	| 1950-1999	| Any | Port |	Any external host including internet traffic |
+| 20XX	| 2000-2049	| 2050-2099	| Any |	Port Range |
+| 21XX	| 2100-2149	| 2150-2199	| Any |	Any |
