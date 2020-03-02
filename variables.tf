@@ -1,3 +1,13 @@
+variable "aws_profile" {
+  description = "AWS profile used during deployment"
+  type        = string
+}
+
+variable "aws_region" {
+  description = "AWS region to deploy into"
+  type        = string
+}
+
 variable "vpc_name" {
   type        = string
   description = "Name that will be prefixed to resources"
@@ -8,14 +18,23 @@ variable "vpc_cidr_block" {
   description = "The CIDR block of the VPC"
 }
 
+variable "vpc_custom_endpoints" {
+  type        = map(object({
+    service_name = string
+    private_dns_enabled = bool
+  }))
+  description = "Map of VPC Custom Interface endpoints"
+  default     = {}
+}
+
 variable "vpc_endpoints" {
-  type        = list(string)
+  type        = set(string)
   description = "List of VPC Interface endpoints"
   default     = []
 }
 
 variable "vpc_gatewayendpoints" {
-  type        = list(string)
+  type        = set(string)
   description = "List of VPC Gateway endpoints"
   default     = []
 }
@@ -33,7 +52,7 @@ variable "vpc_enable_dns_hostnames" {
 }
 
 variable "availability_zones" {
-  type        = list(string)
+  type        = set(string)
   description = "List of availability zones"
 }
 
@@ -81,7 +100,7 @@ variable "enable_internet_gateway" {
 
 variable "enable_nat_gateway" {
   type        = bool
-  description = "Create nat gateways in the VPC"
+  description = "Create nat gateways in the VPC,"
   default     = true
 }
 
@@ -139,16 +158,34 @@ variable "nacl_allow_all_ephemeral" {
   default     = true
 }
 
-variable "nacl_allow_all_http" {
+variable "nacl_allow_all_http_ingress" {
+  type        = bool
+  description = "Add a rule to all NACLs allowing http ingress"
+  default     = true
+}
+
+variable "nacl_allow_all_http_egress" {
   type        = bool
   description = "Add a rule to all NACLs allowing http egress"
   default     = true
 }
 
-variable "nacl_allow_all_https" {
+variable "nacl_allow_all_https_ingress" {
+  type        = bool
+  description = "Add a rule to all NACLs allowing https ingress"
+  default     = true
+}
+
+variable "nacl_allow_all_https_egress" {
   type        = bool
   description = "Add a rule to all NACLs allowing https egress"
   default     = true
+}
+
+variable "nacl_allow_all_ssh_egress" {
+  type        = bool
+  description = "Add a rule to all NACLs allowing ssh egress"
+  default     = false
 }
 
 variable "nacl_block_public_to_secure" {
