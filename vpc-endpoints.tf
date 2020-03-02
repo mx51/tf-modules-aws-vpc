@@ -2,6 +2,10 @@ resource "aws_security_group" "sgforendpoint" {
   name        = "EndpointSG"
   description = "Allow indbound and outbound traffic for VPC endpoint"
   vpc_id      = aws_vpc.main.id
+  tags = merge(
+    { Name = "${var.vpc_name}-EndpointSG" },
+    var.tags
+  )
 }
 
 resource "aws_security_group_rule" "allow_all_ingress" {
