@@ -6,6 +6,13 @@ variable "aws_profile" {
 variable "aws_region" {
   description = "AWS region to deploy into"
   type        = string
+  default     = null
+}
+
+variable "client_name" {
+  type        = string
+  description = "The name of the client"
+  default     = "assembly"
 }
 
 variable "vpc_name" {
@@ -240,6 +247,66 @@ variable "enable_db_secure_subnet_group" {
   type        = bool
   description = "Create a RDS DB subnet group"
   default     = false
+}
+
+variable "enable_vpc_flow_log" {
+  type        = bool
+  description = "Enable VPC FLow logs to be stored into S3 bucket"
+  default     = true
+}
+
+variable "flow_log_bucket_name" {
+  type        = string
+  description = "S3 bucket name to hold VPC Flow logs"
+}
+
+variable "enable_bucket_versioning" {
+  type        = bool
+  description = "Enable s3 bucket versioning"
+  default     = true
+}
+
+variable "enable_lifecycle_rule" {
+  type        = bool
+  description = "Enable s3 bucket versioning"
+  default     = true
+}
+
+variable "lifecycle_prefix" {
+  type        = string
+  description = "Prefix filter. Used to manage object lifecycle events"
+  default     = ""
+}
+
+variable "lifecycle_tags" {
+  type        = map(string)
+  description = "Tags filter. Used to manage object lifecycle events"
+  default     = {}
+}
+
+variable "noncurrent_version_expiration_days" {
+  description = "Specifies when noncurrent object versions expire"
+  default     = 90
+}
+
+variable "noncurrent_version_transition_days" {
+  description = "Specifies when noncurrent object versions transitions"
+  default     = 30
+}
+
+variable "standard_transition_days" {
+  description = "Number of days to persist in the standard storage tier before moving to the infrequent access tier"
+  default     = 30
+}
+
+variable "glacier_transition_days" {
+  description = "Number of days after which to move the data to the glacier storage tier"
+  default     = 60
+}
+
+variable "expiration_days" {
+  description = "Number of days after which to expunge the objects"
+  default     = 90
 }
 
 variable "tags" {
