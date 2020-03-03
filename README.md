@@ -70,6 +70,18 @@ list(object({
 | nacl_private_custom | List of custom nacls to apply to the private tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |
 | nacl_secure_custom | List of custom nacls to apply to the secure tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |
 | enable_db_secure_subnet_group | Create a DB subnet group  | bool | `false` | no |
+| enable_vpc_flow_log | Enable VPC FLow logs to be stored into S3 bucket  | bool | `true` | no |
+| flow_log_bucket_name | S3 bucket name to hold VPC Flow logs  | string | n/a | yes |
+| enable_bucket_versioning | Enable s3 bucket versioning  | bool | `true` | yes |
+| enable_lifecycle_rule | Enable s3 lifecycle rule  | bool | `true` | yes |
+| lifecycle_prefix | Prefix filter. Used to manage object lifecycle events  | string | ` ` | yes |
+| lifecycle_tags | Tags filter. Used to manage object lifecycle events  | map(string) | {} | yes |
+| noncurrent_version_expiration_days | Specifies when noncurrent object versions expire  | int | 90 | yes |
+| noncurrent_version_transition_days | Specifies when noncurrent object versions transitions  | int | 30 | yes |
+| standard_transition_days | Number of days to persist in the standard storage tier before moving to the infrequent access tier  | int | 30 | yes |
+| glacier_transition_days | Number of days after which to move the data to the glacier storage tier  | int | 60 | yes |
+| expiration_days | Number of days after which to expunge the objects  | int | 90 | yes |
+
 | tags | Tags applied to all resources | map(string) | `{}` | no |
 
 ## Outputs

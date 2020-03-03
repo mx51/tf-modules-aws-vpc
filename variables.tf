@@ -268,7 +268,7 @@ variable "enable_bucket_versioning" {
 
 variable "enable_lifecycle_rule" {
   type        = bool
-  description = "Enable s3 bucket versioning"
+  description = "Enable s3 lifecycle rule"
   default     = true
 }
 
