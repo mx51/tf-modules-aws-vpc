@@ -1,9 +1,133 @@
 
-data "template_file" "vpc_flow_log_policy" {
-  template = "${file("${path.module}/vpc-flow-log-policy.json")}"
-  vars = {
-    bucketName = var.flow_log_bucket_name
-    accountId  = data.aws_caller_identity.current.account_id
+
+data "aws_iam_policy_document" "vpc_flow_log_policy" {
+  statement {
+    sid    = "AWSLogDeliveryWrite"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject"
+    ]
+    principals {
+      identifiers = [
+        "delivery.logs.amazonaws.com"
+      ]
+      type = "Service"
+    }
+    resources = ["arn:aws:s3:::${var.flow_log_bucket_name}/flow-logs/AWSLogs/${data.aws_caller_identity.current.account_id}/*"]
+    condition {
+      test     = "StringEquals"
+      variable = "s3:x-amz-acl"
+      values   = ["bucket-owner-full-control"]
+    }
+  }
+
+  statement {
+    sid    = "AWSLogDeliveryAclCheck"
+    effect = "Allow"
+    actions = [
+      "s3:GetBucketAcl"
+    ]
+    principals {
+      identifiers = [
+        "delivery.logs.amazonaws.com"
+      ]
+      type = "Service"
+    }
+    resources = ["arn:aws:s3:::${var.flow_log_bucket_name}"]
+
+  }
+
+}
+
+data "aws_iam_policy_document" "kms_role_policy" {
+  statement {
+    sid    = "Allow administration of the key"
+    effect = "Allow"
+    actions = [
+      "kms:Create*",
+      "kms:Describe*",
+      "kms:Enable*",
+      "kms:List*",
+      "kms:Put*",
+      "kms:Update*",
+      "kms:Revoke*",
+      "kms:Disable*",
+      "kms:Get*",
+      "kms:Delete*",
+      "kms:ScheduleKeyDeletion",
+      "kms:CancelKeyDeletion",
+      "kms:TagResource",
+      "kms:UntagResource"
+    ]
+    principals {
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.client_name}-role-api-fulladmin",
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.client_name}-role-console-breakglass",
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/victor-cmd"
+      ]
+      type = "AWS"
+    }
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "Allow use of the key"
+    effect = "Allow"
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+    principals {
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.client_name}-role-console-breakglass"
+      ]
+      type = "AWS"
+    }
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "AllowExternalAccountAccess"
+    effect = "Allow"
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+    principals {
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+      ]
+      type = "AWS"
+    }
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "AllowExternalAccountsToAttachPersistentResources"
+    effect = "Allow"
+    actions = [
+      "kms:CreateGrant",
+      "kms:ListGrants",
+      "kms:RevokeGrant"
+    ]
+    principals {
+      identifiers = [
+        "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
+      ]
+      type = "AWS"
+    }
+    resources = ["*"]
+    condition {
+      test     = "Bool"
+      variable = "kms:GrantIsForAWSResource"
+      values   = ["true"]
+    }
   }
 }
 
@@ -63,102 +187,17 @@ resource "aws_s3_bucket" "flow_log" {
 
 resource "aws_s3_bucket_policy" "vpc_flow_logging_policy" {
   bucket = aws_s3_bucket.flow_log.id
-  policy = data.template_file.vpc_flow_log_policy.rendered
+  policy = data.aws_iam_policy_document.vpc_flow_log_policy.json
+
 }
 
 resource "aws_kms_key" "s3_bucket_key" {
   description             = "KMS Key for S3 bucket"
   enable_key_rotation     = true
   deletion_window_in_days = 10
-  policy                  = <<POLICY
-{
-  "Version": "2012-10-17",
-  "Id": "key-VPC_FLOW_LOGS",
-  "Statement": [
-    {
-      "Sid": "Allow administration of the key",
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": [
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.client_name}-role-api-fulladmin",          
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.client_name}-role-console-breakglass",
-          "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/victor-cmd"
-        ]
-      },
-      "Action": [
-        "kms:Create*",
-        "kms:Describe*",
-        "kms:Enable*",
-        "kms:List*",
-        "kms:Put*",
-        "kms:Update*",
-        "kms:Revoke*",
-        "kms:Disable*",
-        "kms:Get*",
-        "kms:Delete*",
-        "kms:ScheduleKeyDeletion",
-        "kms:CancelKeyDeletion",
-        "kms:TagResource",
-        "kms:UntagResource"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "Allow use of the key",
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.client_name}-role-console-breakglass"
-      },
-      "Action": [
-        "kms:Encrypt",
-        "kms:Decrypt",
-        "kms:ReEncrypt*",
-        "kms:GenerateDataKey*",
-        "kms:DescribeKey"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "AllowExternalAccountAccess",
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-      },
-      "Action": [
-        "kms:Encrypt",
-        "kms:Decrypt",
-        "kms:ReEncrypt*",
-        "kms:GenerateDataKey*",
-        "kms:DescribeKey"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Sid": "AllowExternalAccountsToAttachPersistentResources",
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
-      },
-      "Action": [
-        "kms:CreateGrant",
-        "kms:ListGrants",
-        "kms:RevokeGrant"
-      ],
-      "Resource": "*",
-      "Condition": {
-        "Bool": {
-          "kms:GrantIsForAWSResource": "true"
-        }
-      }
-    }
-  ]
-}
-POLICY
-
+  policy                  = data.aws_iam_policy_document.kms_role_policy.json
   tags = merge(
     { Name = "${var.vpc_name}-s3-kms-key" },
     var.tags
   )
-
-
 }
