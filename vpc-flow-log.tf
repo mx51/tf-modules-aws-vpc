@@ -15,7 +15,7 @@ data "aws_iam_policy_document" "vpc_flow_log_policy" {
       ]
       type = "Service"
     }
-    resources = ["arn:aws:s3:::${local.vpc_bucket_name}/flow-logs/AWSLogs/${data.aws_caller_identity.current.account_id}/*"]
+    resources = ["arn:aws:s3:::${local.vpc_bucket_name}/AWSLogs/${data.aws_caller_identity.current.account_id}/*"]
     condition {
       test     = "StringEquals"
       variable = "s3:x-amz-acl"
