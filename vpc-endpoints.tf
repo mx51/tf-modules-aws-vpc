@@ -23,7 +23,7 @@ resource "aws_security_group_rule" "allow_all_egress" {
 }
 
 resource "aws_vpc_endpoint" "vpc_endpoint" {
-  for_each            = toset(var.vpc_endpoints)
+  for_each            = var.vpc_endpoints
   vpc_id              = aws_vpc.main.id
   service_name        = "com.amazonaws.${data.aws_region.current.name}.${each.value}"
   vpc_endpoint_type   = "Interface"
@@ -37,12 +37,26 @@ resource "aws_vpc_endpoint" "vpc_endpoint" {
 }
 
 resource "aws_vpc_endpoint" "vpc_gatewayendpoint" {
-  for_each        = toset(var.vpc_gatewayendpoints)
+  for_each        = var.vpc_gatewayendpoints
   vpc_id          = aws_vpc.main.id
   service_name    = "com.amazonaws.${data.aws_region.current.name}.${each.value}"
   route_table_ids = concat("${aws_route_table.private.*.id}", "${aws_route_table.secure.*.id}")
   tags = merge(
     { Name = "${var.vpc_name}-${each.value}-endpoint" },
+    var.tags
+  )
+}
+
+resource "aws_vpc_endpoint" "vpc_custom_endpoint" {
+  for_each            = var.vpc_custom_endpoints
+  vpc_id              = aws_vpc.main.id
+  service_name        = each.value.service_name
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = each.value.private_dns_enabled
+  security_group_ids  = [aws_security_group.sgforendpoint.id]
+  subnet_ids          = aws_subnet.private.*.id
+  tags = merge(
+    { Name = "${var.vpc_name}-${each.key}-endpoint" },
     var.tags
   )
 }
