@@ -2,7 +2,18 @@ locals {
   vpc_bucket_name = "${aws_vpc.main.id}-${var.flow_log_bucket_name}"
 }
 
+data "aws_iam_policy_document" "log_assume" {
+  statement {
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["vpc-flow-logs.amazonaws.com"]
+    }
+  }
+}
+
 data "aws_iam_policy_document" "vpc_flow_log_policy" {
+
   statement {
     sid    = "AWSLogDeliveryWrite"
     effect = "Allow"
@@ -36,7 +47,6 @@ data "aws_iam_policy_document" "vpc_flow_log_policy" {
       type = "Service"
     }
     resources = ["arn:aws:s3:::${local.vpc_bucket_name}"]
-
   }
 
 }
@@ -153,13 +163,23 @@ data "aws_iam_policy_document" "kms_role_policy" {
 }
 
 resource "aws_flow_log" "main" {
-
   count                = var.enable_vpc_flow_log ? 1 : 0
+  iam_role_arn         = aws_iam_role.log[count.index].arn
   log_destination      = aws_s3_bucket.flow_log[count.index].arn
   log_destination_type = "s3"
   traffic_type         = "ALL"
   vpc_id               = aws_vpc.main.id
 
+}
+
+resource "aws_iam_role" "log" {
+  count              = var.enable_vpc_flow_log ? 1 : 0
+  name               = "iam-flow-log-role"
+  assume_role_policy = data.aws_iam_policy_document.log_assume.json
+  tags = merge(
+    { Name = "${var.vpc_name}-flow-log-role" },
+    var.tags
+  )
 }
 
 resource "aws_s3_bucket" "flow_log" {
@@ -212,7 +232,6 @@ resource "aws_s3_bucket_policy" "vpc_flow_logging_policy" {
   count  = var.enable_vpc_flow_log == true ? 1 : 0
   bucket = aws_s3_bucket.flow_log[count.index].id
   policy = data.aws_iam_policy_document.vpc_flow_log_policy.json
-
 }
 
 resource "aws_kms_key" "s3_bucket_key" {
