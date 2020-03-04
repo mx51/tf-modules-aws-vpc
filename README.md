@@ -42,9 +42,9 @@ list(object({
 | vpc_cidr_block | The CIDR block of the VPC | string | n/a | yes |
 | vpc_enable_dns_support | Enable VPC DNS Resolver | bool | `true` | no |
 | vpc_enable_dns_hostnames | Enable VPC DNS hostname resolution | bool | `true` | no |
-| availability_zones | List of availability zones | list(string) | n/a | yes |
-| vpc_endpoints | List of VPC Interface endpoints | list(string) | [] | no |
-| vpc_gatewayendpoints | List of VPC Gateway endpoints | list(string) | [] | no |
+| availability_zones | List of availability zones | set(string) | n/a | yes |
+| vpc_endpoints | List of VPC Interface endpoints | set(string) | [] | no |
+| vpc_gatewayendpoints | List of VPC Gateway endpoints | set(string) | [] | no |
 | public_tier_newbits | newbits value for calculating the public tier size | number | `2` | no |
 | public_subnet_newbits | newbits value for calculating the public subnet size | number | `2` | no |
 | private_tier_newbits | newbits value for calculating the private tier size | number | `2` | no |
@@ -60,8 +60,11 @@ list(object({
 | custom_dhcp_options | Custom DHCP options | object({domain_name = string, domain_name_servers = list(string), ntp_servers = list(string), netbios_name_servers = list(string), netbios_node_type = number}) | {domain_name = null domain_name_servers = null ntp_servers = null netbios_name_servers = null netbios_node_type = null} | no |
 | nacl_allow_all_vpc_traffic | Add a rule to all NACLs allowing all traffic to/from the VPC CIDR | bool | `true` | no |
 | nacl_allow_all_ephemeral | Add a rule to all NACLs allowing all ephemeral ports | bool | `true` | no |
-| nacl_allow_all_http | Add a rule to all NACLs allowing HTTP egress | bool | `true` | no |
-| nacl_allow_all_https | Add a rule to all NACLs allowing HTTPS egress | bool | `true` | no |
+| nacl_allow_all_http_ingress | Add a rule to all NACLs allowing HTTP ingress | bool | `true` | no |
+| nacl_allow_all_http_egress | Add a rule to all NACLs allowing HTTP egress | bool | `true` | no |
+| nacl_allow_all_https_ingress | Add a rule to all NACLs allowing HTTPS ingress | bool | `true` | no |
+| nacl_allow_all_https_egress | Add a rule to all NACLs allowing HTTPS egress | bool | `true` | no |
+| nacl_allow_all_ssh_egress | Add a rule to all NACLs allowing SSH egress | bool | `false` | no |
 | nacl_block_public_to_secure | Block all traffic between public and secure tiers | bool | `false` | no |
 | nacl_public_custom | List of custom nacls to apply to the public tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |
 | nacl_private_custom | List of custom nacls to apply to the private tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |

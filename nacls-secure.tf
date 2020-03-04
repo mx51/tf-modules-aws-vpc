@@ -127,8 +127,22 @@ resource "aws_network_acl_rule" "secure_custom" {
   to_port     = var.nacl_secure_custom[count.index].to_port
 }
 
+resource "aws_network_acl_rule" "secure_allow_http_ingress" {
+  count = var.nacl_allow_all_http_ingress ? 1 : 0
+
+  network_acl_id = aws_network_acl.secure.id
+
+  rule_number = 1950
+  egress      = false
+  protocol    = 6
+  rule_action = "allow"
+  cidr_block  = "0.0.0.0/0"
+  from_port   = 80
+  to_port     = 80
+}
+
 resource "aws_network_acl_rule" "secure_allow_http_egress" {
-  count = var.nacl_allow_all_http ? 1 : 0
+  count = var.nacl_allow_all_http_egress ? 1 : 0
 
   network_acl_id = aws_network_acl.secure.id
 
@@ -141,8 +155,22 @@ resource "aws_network_acl_rule" "secure_allow_http_egress" {
   to_port     = 80
 }
 
+resource "aws_network_acl_rule" "secure_allow_https_ingress" {
+  count = var.nacl_allow_all_https_ingress ? 1 : 0
+
+  network_acl_id = aws_network_acl.secure.id
+
+  rule_number = 1951
+  egress      = false
+  protocol    = 6
+  rule_action = "allow"
+  cidr_block  = "0.0.0.0/0"
+  from_port   = 443
+  to_port     = 443
+}
+
 resource "aws_network_acl_rule" "secure_allow_https_egress" {
-  count = var.nacl_allow_all_https ? 1 : 0
+  count = var.nacl_allow_all_https_egress ? 1 : 0
 
   network_acl_id = aws_network_acl.secure.id
 
@@ -153,4 +181,18 @@ resource "aws_network_acl_rule" "secure_allow_https_egress" {
   cidr_block  = "0.0.0.0/0"
   from_port   = 443
   to_port     = 443
+}
+
+resource "aws_network_acl_rule" "secure_allow_ssh_egress" {
+  count = var.nacl_allow_all_ssh_egress ? 1 : 0
+
+  network_acl_id = aws_network_acl.secure.id
+
+  rule_number = 1952
+  egress      = true
+  protocol    = 6
+  rule_action = "allow"
+  cidr_block  = "0.0.0.0/0"
+  from_port   = 22
+  to_port     = 22
 }
