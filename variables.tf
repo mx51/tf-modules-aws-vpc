@@ -258,6 +258,7 @@ variable "enable_vpc_flow_log" {
 variable "flow_log_bucket_name" {
   type        = string
   description = "S3 bucket name to hold VPC Flow logs"
+  default     = "assembly-vpc-flow-log-bucket"
 }
 
 variable "enable_bucket_versioning" {

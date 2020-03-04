@@ -1,4 +1,6 @@
-
+locals {
+  vpc_bucket_name = "${aws_vpc.main.id}-${var.flow_log_bucket_name}"
+}
 
 data "aws_iam_policy_document" "vpc_flow_log_policy" {
   statement {
@@ -13,7 +15,7 @@ data "aws_iam_policy_document" "vpc_flow_log_policy" {
       ]
       type = "Service"
     }
-    resources = ["arn:aws:s3:::${var.flow_log_bucket_name}/flow-logs/AWSLogs/${data.aws_caller_identity.current.account_id}/*"]
+    resources = ["arn:aws:s3:::${local.vpc_bucket_name}/flow-logs/AWSLogs/${data.aws_caller_identity.current.account_id}/*"]
     condition {
       test     = "StringEquals"
       variable = "s3:x-amz-acl"
@@ -33,7 +35,7 @@ data "aws_iam_policy_document" "vpc_flow_log_policy" {
       ]
       type = "Service"
     }
-    resources = ["arn:aws:s3:::${var.flow_log_bucket_name}"]
+    resources = ["arn:aws:s3:::${local.vpc_bucket_name}"]
 
   }
 
@@ -90,6 +92,25 @@ data "aws_iam_policy_document" "kms_role_policy" {
   }
 
   statement {
+    sid    = "Allow VPC Flow Logs to use the key"
+    effect = "Allow"
+    actions = [
+      "kms:Encrypt",
+      "kms:Decrypt",
+      "kms:ReEncrypt*",
+      "kms:GenerateDataKey*",
+      "kms:DescribeKey"
+    ]
+    principals {
+      identifiers = [
+        "delivery.logs.amazonaws.com"
+      ]
+      type = "Service"
+    }
+    resources = ["*"]
+  }
+
+  statement {
     sid    = "AllowExternalAccountAccess"
     effect = "Allow"
     actions = [
@@ -132,8 +153,9 @@ data "aws_iam_policy_document" "kms_role_policy" {
 }
 
 resource "aws_flow_log" "main" {
+
   count                = var.enable_vpc_flow_log ? 1 : 0
-  log_destination      = aws_s3_bucket.flow_log.arn
+  log_destination      = aws_s3_bucket.flow_log[count.index].arn
   log_destination_type = "s3"
   traffic_type         = "ALL"
   vpc_id               = aws_vpc.main.id
@@ -141,7 +163,8 @@ resource "aws_flow_log" "main" {
 }
 
 resource "aws_s3_bucket" "flow_log" {
-  bucket = var.flow_log_bucket_name
+  count  = var.enable_vpc_flow_log == true ? 1 : 0
+  bucket = local.vpc_bucket_name
   acl    = "log-delivery-write"
   versioning {
     enabled = var.enable_bucket_versioning
@@ -175,7 +198,7 @@ resource "aws_s3_bucket" "flow_log" {
     rule {
       apply_server_side_encryption_by_default {
         sse_algorithm     = "aws:kms"
-        kms_master_key_id = aws_kms_key.s3_bucket_key.key_id
+        kms_master_key_id = aws_kms_key.s3_bucket_key[count.index].key_id
       }
     }
   }
@@ -186,12 +209,14 @@ resource "aws_s3_bucket" "flow_log" {
 }
 
 resource "aws_s3_bucket_policy" "vpc_flow_logging_policy" {
-  bucket = aws_s3_bucket.flow_log.id
+  count  = var.enable_vpc_flow_log == true ? 1 : 0
+  bucket = aws_s3_bucket.flow_log[count.index].id
   policy = data.aws_iam_policy_document.vpc_flow_log_policy.json
 
 }
 
 resource "aws_kms_key" "s3_bucket_key" {
+  count                   = var.enable_vpc_flow_log == true ? 1 : 0
   description             = "KMS Key for S3 bucket"
   enable_key_rotation     = true
   deletion_window_in_days = 10
