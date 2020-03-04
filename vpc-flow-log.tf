@@ -12,6 +12,16 @@ data "aws_iam_policy_document" "log_assume" {
   }
 }
 
+data "aws_iam_policy_document" "log_policy" {
+  statement {
+    actions = [
+      "logs:CreateLogDelivery",
+      "logs:DeleteDelivery"
+    ]
+    resources = ["*"]
+  }
+}
+
 data "aws_iam_policy_document" "vpc_flow_log_policy" {
 
   statement {
@@ -48,7 +58,6 @@ data "aws_iam_policy_document" "vpc_flow_log_policy" {
     }
     resources = ["arn:aws:s3:::${local.vpc_bucket_name}"]
   }
-
 }
 
 data "aws_iam_policy_document" "kms_role_policy" {
@@ -169,7 +178,6 @@ resource "aws_flow_log" "main" {
   log_destination_type = "s3"
   traffic_type         = "ALL"
   vpc_id               = aws_vpc.main.id
-
 }
 
 resource "aws_iam_role" "log" {
@@ -180,6 +188,13 @@ resource "aws_iam_role" "log" {
     { Name = "${var.vpc_name}-flow-log-role" },
     var.tags
   )
+}
+
+resource "aws_iam_role_policy" "log" {
+  count  = var.enable_vpc_flow_log ? 1 : 0
+  name   = var.vpc_name
+  role   = aws_iam_role.log[count.index].id
+  policy = data.aws_iam_policy_document.log_policy.json
 }
 
 resource "aws_s3_bucket" "flow_log" {
