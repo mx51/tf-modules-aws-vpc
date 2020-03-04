@@ -13,7 +13,6 @@ variable "client_name" {
   type        = string
   description = "The name of the client"
   default     = "assembly"
-  type        = string
 }
 
 variable "vpc_name" {
@@ -27,8 +26,8 @@ variable "vpc_cidr_block" {
 }
 
 variable "vpc_custom_endpoints" {
-  type        = map(object({
-    service_name = string
+  type = map(object({
+    service_name        = string
     private_dns_enabled = bool
   }))
   description = "Map of VPC Custom Interface endpoints"
@@ -253,7 +252,7 @@ variable "enable_db_secure_subnet_group" {
 variable "enable_vpc_flow_log" {
   type        = bool
   description = "Enable VPC FLow logs to be stored into S3 bucket"
-  default     = true
+  default     = false
 }
 
 variable "flow_log_bucket_name" {
