@@ -5,14 +5,8 @@ variable "aws_profile" {
 
 variable "aws_region" {
   type        = string
-  description = "The AWS Region of the aggregator account"
+  description = "The AWS Region of the account"
   default     = null
-}
-
-variable "client_name" {
-  type        = string
-  description = "The name of the client"
-  default     = "assembly"
 }
 
 variable "vpc_name" {
@@ -258,7 +252,7 @@ variable "enable_vpc_flow_log" {
 variable "flow_log_bucket_name" {
   type        = string
   description = "S3 bucket name to hold VPC Flow logs"
-  default     = "assembly-vpc-flow-log-bucket"
+  default     = "flow-log-bucket"
 }
 
 variable "enable_bucket_versioning" {
