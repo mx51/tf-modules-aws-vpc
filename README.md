@@ -71,7 +71,7 @@ list(object({
 | nacl_secure_custom | List of custom nacls to apply to the secure tier | list(object({rule_number = number, egress = bool, protocol = any, rule_action = string, cidr_block = string, from_port = string, to_port = string})) | `null` | no |
 | enable_db_secure_subnet_group | Create a DB subnet group  | bool | `false` | no |
 | enable_vpc_flow_log | Enable VPC FLow logs to be stored into S3 bucket  | bool | `false` | no |
-| flow_log_bucket_name | S3 bucket name to hold VPC Flow logs  | string | n/a | yes |
+| flow_log_bucket_name | S3 bucket name to hold VPC Flow logs. Bucket name will be prefaced by the vpc id  | string | n/a | yes |
 | enable_bucket_versioning | Enable s3 bucket versioning  | bool | `true` | yes |
 | enable_lifecycle_rule | Enable s3 lifecycle rule  | bool | `true` | yes |
 | lifecycle_prefix | Prefix filter. Used to manage object lifecycle events  | string | ` ` | yes |
