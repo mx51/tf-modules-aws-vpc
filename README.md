@@ -44,6 +44,7 @@ list(object({
 | vpc_enable_dns_hostnames | Enable VPC DNS hostname resolution | bool | `true` | no |
 | availability_zones | List of availability zones | set(string) | n/a | yes |
 | vpc_endpoints | List of VPC Interface endpoints | set(string) | [] | no |
+| vpc_endpoints_tls | List of VPC Interface endpoints requiring TLS | set(string) | [] | no |
 | vpc_gatewayendpoints | List of VPC Gateway endpoints | set(string) | [] | no |
 | public_tier_newbits | newbits value for calculating the public tier size | number | `2` | no |
 | public_subnet_newbits | newbits value for calculating the public subnet size | number | `2` | no |

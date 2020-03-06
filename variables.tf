@@ -34,6 +34,12 @@ variable "vpc_endpoints" {
   default     = []
 }
 
+variable "vpc_endpoints_tls" {
+  type        = set(string)
+  description = "List of VPC Interface endpoints requiring tls"
+  default     = []
+}
+
 variable "vpc_gatewayendpoints" {
   type        = set(string)
   description = "List of VPC Gateway endpoints"
