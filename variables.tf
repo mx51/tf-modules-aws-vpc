@@ -107,7 +107,7 @@ variable "enable_internet_gateway" {
 
 variable "enable_nat_gateway" {
   type        = bool
-  description = "Create nat gateways in the VPC for the public and private subnet"
+  description = "Create nat gateways in the VPC"
   default     = true
 }
 
