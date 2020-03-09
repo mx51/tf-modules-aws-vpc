@@ -19,7 +19,7 @@ resource "aws_route_table_association" "secure" {
 }
 
 resource "aws_route" "secure_default" {
-  count = var.enable_nat_gateway_on_secure_subnet ? length(var.availability_zones) : 0
+  count = var.enable_nat_gateway && var.enable_default_route_from_secure_subnet ? length(var.availability_zones) : 0
 
   route_table_id         = aws_route_table.secure[count.index].id
   destination_cidr_block = "0.0.0.0/0"
