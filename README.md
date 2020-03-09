@@ -53,7 +53,8 @@ list(object({
 | secure_tier_newbits | newbits value for calculating the secure tier size | number | `2` | no |
 | secure_subnet_newbits | newbits value for calculating the secure subnet size | number | `2` | no |
 | enable_internet_gateway | Attach an internet gateway to the VPC | bool | `true` | no |
-| enable_nat_gateway | Create NAT gateways in the VPC | bool | `true` | no |
+| enable_nat_gateway | Create NAT gateways in the VPC for private and public subnets | bool | `true` | no |
+| enable_nat_gateway_on_secure_subnet | Create NAT gateways in the VPC for the secure subnet | bool | `false` | no |
 | enable_per_az_nat_gateway | Create 1 NAT gateway per AZ | bool | `true` | no |
 | enable_virtual_private_gateway | Attach a virtual private gateway to the VPC | bool | `false` | no |
 | virtual_private_gateway_asn | ASN for the Amazon side of the VPG | number | `64512` | no |
