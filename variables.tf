@@ -1,14 +1,3 @@
-variable "aws_profile" {
-  description = "AWS profile used during deployment"
-  type        = string
-}
-
-variable "aws_region" {
-  type        = string
-  description = "The AWS Region of the account"
-  default     = null
-}
-
 variable "vpc_name" {
   type        = string
   description = "Name that will be prefixed to resources"
