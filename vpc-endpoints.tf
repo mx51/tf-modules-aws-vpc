@@ -35,6 +35,7 @@ resource "aws_security_group" "sgforendpoint_tls" {
     var.tags
   )
 }
+
 resource "aws_security_group_rule" "allow_rule_ingress_tls" {
   type              = "ingress"
   from_port         = 443
