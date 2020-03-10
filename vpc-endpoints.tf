@@ -35,7 +35,7 @@ resource "aws_security_group" "sgforendpoint_tls" {
     var.tags
   )
 }
-resource "aws_security_group_rule" "allow_all_ingress_tls" {
+resource "aws_security_group_rule" "allow_rule_ingress_tls" {
   type              = "ingress"
   from_port         = 443
   to_port           = 443
@@ -44,7 +44,7 @@ resource "aws_security_group_rule" "allow_all_ingress_tls" {
   security_group_id = aws_security_group.sgforendpoint_tls.id
 }
 
-resource "aws_security_group_rule" "allow_all_egress_tls" {
+resource "aws_security_group_rule" "allow_rule_egress_tls" {
   type              = "egress"
   from_port         = 443
   to_port           = 443
