@@ -23,6 +23,12 @@ variable "vpc_endpoints" {
   default     = []
 }
 
+variable "vpc_endpoints_tls" {
+  type        = set(string)
+  description = "List of VPC Interface endpoints requiring tls"
+  default     = []
+}
+
 variable "vpc_gatewayendpoints" {
   type        = set(string)
   description = "List of VPC Gateway endpoints"
@@ -90,8 +96,14 @@ variable "enable_internet_gateway" {
 
 variable "enable_nat_gateway" {
   type        = bool
-  description = "Create nat gateways in the VPC,"
+  description = "Create nat gateways in the VPC"
   default     = true
+}
+
+variable "enable_default_route_from_secure_subnet" {
+  type        = bool
+  description = "Enable default route to nat gateway from secure subnet"
+  default     = false
 }
 
 variable "enable_per_az_nat_gateway" {

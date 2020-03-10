@@ -44,6 +44,7 @@ list(object({
 | vpc_enable_dns_hostnames | Enable VPC DNS hostname resolution | bool | `true` | no |
 | availability_zones | List of availability zones | set(string) | n/a | yes |
 | vpc_endpoints | List of VPC Interface endpoints | set(string) | [] | no |
+| vpc_endpoints_tls | List of VPC Interface endpoints requiring TLS | set(string) | [] | no |
 | vpc_gatewayendpoints | List of VPC Gateway endpoints | set(string) | [] | no |
 | public_tier_newbits | newbits value for calculating the public tier size | number | `2` | no |
 | public_subnet_newbits | newbits value for calculating the public subnet size | number | `2` | no |
@@ -53,6 +54,7 @@ list(object({
 | secure_subnet_newbits | newbits value for calculating the secure subnet size | number | `2` | no |
 | enable_internet_gateway | Attach an internet gateway to the VPC | bool | `true` | no |
 | enable_nat_gateway | Create NAT gateways in the VPC | bool | `true` | no |
+| enable_default_route_from_secure_subnet | Enable default route to nat gateway from secure subnet | bool | `false` | no |
 | enable_per_az_nat_gateway | Create 1 NAT gateway per AZ | bool | `true` | no |
 | enable_virtual_private_gateway | Attach a virtual private gateway to the VPC | bool | `false` | no |
 | virtual_private_gateway_asn | ASN for the Amazon side of the VPG | number | `64512` | no |
