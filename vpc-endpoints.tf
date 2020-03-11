@@ -27,6 +27,8 @@ resource "aws_security_group_rule" "allow_all_egress" {
 }
 
 resource "aws_security_group" "sgforendpoint_tls" {
+  count = length(var.vpc_endpoints_tls) == 0 ? 0 : 1
+
   name        = "EndpointSG-TLS"
   description = "Allow indbound and outbound traffic for VPC endpoint requiring TLS"
   vpc_id      = aws_vpc.main.id
@@ -37,21 +39,25 @@ resource "aws_security_group" "sgforendpoint_tls" {
 }
 
 resource "aws_security_group_rule" "allow_rule_ingress_tls" {
+  count = length(var.vpc_endpoints_tls) == 0 ? 0 : 1
+
   type              = "ingress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.sgforendpoint_tls.id
+  security_group_id = aws_security_group.sgforendpoint_tls[count.index].id
 }
 
 resource "aws_security_group_rule" "allow_rule_egress_tls" {
+  count = length(var.vpc_endpoints_tls) == 0 ? 0 : 1
+
   type              = "egress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.sgforendpoint_tls.id
+  security_group_id = aws_security_group.sgforendpoint_tls[count.index].id
 }
 
 resource "aws_vpc_endpoint" "vpc_endpoint" {
@@ -71,10 +77,10 @@ resource "aws_vpc_endpoint" "vpc_endpoint" {
 resource "aws_vpc_endpoint" "vpc_endpoint_tls" {
   for_each            = var.vpc_endpoints_tls
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${var.aws_region}.${each.value}"
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.${each.value}"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = "true"
-  security_group_ids  = [aws_security_group.sgforendpoint_tls.id]
+  security_group_ids  = [aws_security_group.sgforendpoint_tls[0].id]
   subnet_ids          = aws_subnet.private.*.id
   tags = merge(
     { Name = "${var.vpc_name}-${each.value}-endpoint-tls" },
