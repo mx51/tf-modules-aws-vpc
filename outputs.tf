@@ -39,5 +39,5 @@ output "private_route_table_ids" {
 }
 
 output "vpc_custom_endpoint_dns_entries" {
-  value = {for k, v in aws_vpc_endpoint.vpc_custom_endpoint: k => aws_vpc_endpoint.vpc_custom_endpoint[k].dns_entry}
+  value = { for k, v in aws_vpc_endpoint.vpc_custom_endpoint : k => aws_vpc_endpoint.vpc_custom_endpoint[k].dns_entry }
 }
