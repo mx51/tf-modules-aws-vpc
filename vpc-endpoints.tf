@@ -27,7 +27,7 @@ resource "aws_security_group_rule" "allow_all_egress" {
 }
 
 resource "aws_security_group" "sgforendpoint_tls" {
-  count = length(var.vpc_endpoints_tls) == 0 ? 0 : 1
+  count = length(var.vpc_endpoints_tls) >= 1 ? 1 : 0
 
   name        = "EndpointSG-TLS"
   description = "Allow indbound and outbound traffic for VPC endpoint requiring TLS"
@@ -39,25 +39,25 @@ resource "aws_security_group" "sgforendpoint_tls" {
 }
 
 resource "aws_security_group_rule" "allow_rule_ingress_tls" {
-  count = length(var.vpc_endpoints_tls) == 0 ? 0 : 1
+  count = length(var.vpc_endpoints_tls) >= 1 ? 1 : 0
 
   type              = "ingress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.sgforendpoint_tls[count.index].id
+  security_group_id = aws_security_group.sgforendpoint_tls[0].id
 }
 
 resource "aws_security_group_rule" "allow_rule_egress_tls" {
-  count = length(var.vpc_endpoints_tls) == 0 ? 0 : 1
+  count = length(var.vpc_endpoints_tls) >= 1 ? 1 : 0
 
   type              = "egress"
   from_port         = 443
   to_port           = 443
   protocol          = "tcp"
   cidr_blocks       = ["0.0.0.0/0"]
-  security_group_id = aws_security_group.sgforendpoint_tls[count.index].id
+  security_group_id = aws_security_group.sgforendpoint_tls[0].id
 }
 
 resource "aws_vpc_endpoint" "vpc_endpoint" {
