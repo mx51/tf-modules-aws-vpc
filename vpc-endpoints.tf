@@ -71,7 +71,7 @@ resource "aws_vpc_endpoint" "vpc_endpoint" {
 resource "aws_vpc_endpoint" "vpc_endpoint_tls" {
   for_each            = var.vpc_endpoints_tls
   vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.${var.aws_region}.${each.value}"
+  service_name        = "com.amazonaws.${data.aws_region.current.name}.${each.value}"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = "true"
   security_group_ids  = [aws_security_group.sgforendpoint_tls.id]
