@@ -41,3 +41,7 @@ output "private_route_table_ids" {
 output "vpc_custom_endpoint_dns_entries" {
   value = { for k, v in aws_vpc_endpoint.vpc_custom_endpoint : k => aws_vpc_endpoint.vpc_custom_endpoint[k].dns_entry }
 }
+
+output "secure_db_subnet_group_id" {
+  value = length(aws_db_subnet_group.main) > 0 ? aws_db_subnet_group.main[0].id : ""
+}
