@@ -92,6 +92,7 @@ list(object({
 | public_tier_subnet | Calculated CIDR range of the public tier |
 | private_tier_subnet | Calculated CIDR range of the private tier |
 | secure_tier_subnet | Calculated CIDR range of the secure tier |
+| secure_db_subnet_group_id | Name of db subnet group created in secure tier |
 
 ## Development
 Most of the Terraform ecosystem does not yet support 0.12. You need to manually update Inputs/Outputs when you add variables until terraform-docs supports 0.12.
