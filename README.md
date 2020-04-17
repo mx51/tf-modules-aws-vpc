@@ -62,6 +62,7 @@ list(object({
 | custom_dhcp_options | Custom DHCP options | object({domain_name = string, domain_name_servers = list(string), ntp_servers = list(string), netbios_name_servers = list(string), netbios_node_type = number}) | {domain_name = null domain_name_servers = null ntp_servers = null netbios_name_servers = null netbios_node_type = null} | no |
 | nacl_allow_all_vpc_traffic | Add a rule to all NACLs allowing all traffic to/from the VPC CIDR | bool | `true` | no |
 | nacl_allow_all_ephemeral | Add a rule to all NACLs allowing all ephemeral ports | bool | `true` | no |
+| nacl_allow_all_egress_dns | Add a rule to all NACLs allowing DNS egress (tcp and udp) | bool | `false` | no |
 | nacl_allow_all_http_ingress | Add a rule to all NACLs allowing HTTP ingress | bool | `true` | no |
 | nacl_allow_all_http_egress | Add a rule to all NACLs allowing HTTP egress | bool | `true` | no |
 | nacl_allow_all_https_ingress | Add a rule to all NACLs allowing HTTPS ingress | bool | `true` | no |

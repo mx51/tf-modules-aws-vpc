@@ -196,3 +196,31 @@ resource "aws_network_acl_rule" "secure_allow_ssh_egress" {
   from_port   = 22
   to_port     = 22
 }
+
+resource "aws_network_acl_rule" "secure_allow_egress_dns_udp" {
+  count = var.nacl_allow_all_egress_dns ? 1 : 0
+
+  network_acl_id = aws_network_acl.secure.id
+
+  rule_number = 1953
+  egress      = true
+  protocol    = "udp"
+  rule_action = "allow"
+  cidr_block  = "0.0.0.0/0"
+  from_port   = 53
+  to_port     = 53
+}
+
+resource "aws_network_acl_rule" "secure_allow_egress_dns_tcp" {
+  count = var.nacl_allow_all_egress_dns ? 1 : 0
+
+  network_acl_id = aws_network_acl.secure.id
+
+  rule_number = 1954
+  egress      = true
+  protocol    = "tcp"
+  rule_action = "allow"
+  cidr_block  = "0.0.0.0/0"
+  from_port   = 53
+  to_port     = 53
+}

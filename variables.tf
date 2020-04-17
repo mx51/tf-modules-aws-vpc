@@ -160,6 +160,12 @@ variable "nacl_allow_all_ephemeral" {
   default     = true
 }
 
+variable "nacl_allow_all_egress_dns" {
+  type        = bool
+  description = "Add a rule to all NACLs allowing egress to dns (tcp and udp)"
+  default     = false
+}
+
 variable "nacl_allow_all_http_ingress" {
   type        = bool
   description = "Add a rule to all NACLs allowing http ingress"
