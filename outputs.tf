@@ -45,3 +45,7 @@ output "vpc_custom_endpoint_dns_entries" {
 output "secure_db_subnet_group_id" {
   value = length(aws_db_subnet_group.main) > 0 ? aws_db_subnet_group.main[0].id : ""
 }
+
+output "vpc_endpoints_ids" {
+  value = { for k, v in aws_vpc_endpoint.vpc_endpoint : k => aws_vpc_endpoint.vpc_endpoint[k].id }
+}
