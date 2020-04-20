@@ -90,10 +90,19 @@ list(object({
 ## Outputs
 | Name | Description |
 |------|-------------|
-| public_tier_subnet | Calculated CIDR range of the public tier |
-| private_tier_subnet | Calculated CIDR range of the private tier |
-| secure_tier_subnet | Calculated CIDR range of the secure tier |
-| secure_db_subnet_group_id | Name of db subnet group created in secure tier |
+| private\_route\_table\_ids | n/a |
+| private\_subnet\_ids | n/a |
+| private\_tier\_subnet | n/a |
+| public\_route\_table\_ids | n/a |
+| public\_subnet\_ids | n/a |
+| public\_tier\_subnet | n/a |
+| secure\_db\_subnet\_group\_id | n/a |
+| secure\_subnet\_ids | n/a |
+| secure\_tier\_subnet | n/a |
+| vpc\_cidr | n/a |
+| vpc\_custom\_endpoint\_dns\_entries | n/a |
+| vpc\_endpoints\_ids | n/a |
+| vpc\_id | n/a |
 
 ## Development
 Most of the Terraform ecosystem does not yet support 0.12. You need to manually update Inputs/Outputs when you add variables until terraform-docs supports 0.12.
@@ -102,7 +111,7 @@ Most of the Terraform ecosystem does not yet support 0.12. You need to manually 
 
 Network Access Control Lists (NACL) provide an additional layer of security by providing subnet level firewalling. NACL's will be used to ensure that the defence in depth network architecture is enforced. NACL's are applied in order of rule number with the processing stopping at the first matched rule, which means that a standardised rule numbering is required to ensure new rules can be added as required.
 
-NACL's are stateless, which means return traffic is not implicitly allowed and both inbound and outbound traffic flows must be defined for all communication. There are limits on the number of NACL rules which can be defined on a single subnet, additionally NACL's can add a layer of complexity to the environment as firewall rules need to be managed at both the subnet and host layer. To reduce complexity, it is recommended to apply a standard NACL policy this defines the network tier level access and does not got down to the host / port level to ensure manageability and reduce the risk of running into rule count limits. 
+NACL's are stateless, which means return traffic is not implicitly allowed and both inbound and outbound traffic flows must be defined for all communication. There are limits on the number of NACL rules which can be defined on a single subnet, additionally NACL's can add a layer of complexity to the environment as firewall rules need to be managed at both the subnet and host layer. To reduce complexity, it is recommended to apply a standard NACL policy this defines the network tier level access and does not got down to the host / port level to ensure manageability and reduce the risk of running into rule count limits.
 
 ### NACL Key:
 
