@@ -50,6 +50,6 @@ output "vpc_endpoints_ids" {
   value = { for k, v in aws_vpc_endpoint.vpc_endpoint : k => aws_vpc_endpoint.vpc_endpoint[k].id }
 }
 
-output "vpc_endpoints_dns_name" {
-  value = { for k, v in aws_vpc_endpoint.vpc_endpoint : k => aws_vpc_endpoint.vpc_endpoint[k].dns_name }
+output "vpc_endpoints_dns_entries" {
+  value = { for k, v in aws_vpc_endpoint.vpc_endpoint : k => aws_vpc_endpoint.vpc_endpoint[k].dns_entry }
 }
