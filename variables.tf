@@ -270,7 +270,7 @@ variable "send_flow_log_to_external_bucket" {
 
 variable "flow_log_external_bucket" {
   type        = string
-  description = "Name of the external bucket. Note, the bucket will need to allow the account where the VPC resides in as a trustred principa"
+  description = "Name of the external bucket. Note, the bucket will need to allow the account where the VPC resides in as a trusted principal"
   default     = true
 }
 
