@@ -262,6 +262,18 @@ variable "flow_log_bucket_name" {
   default     = "flow-log-bucket"
 }
 
+variable "send_flow_log_to_external_bucket" {
+  type        = bool
+  description = "Whether to send the flow log to an external created bucket"
+  default     = false
+}
+
+variable "flow_log_external_bucket" {
+  type        = string
+  description = "Name of the external bucket. Note, the bucket will need to allow the account where the VPC resides in as a trustred principa"
+  default     = true
+}
+
 variable "enable_bucket_versioning" {
   type        = bool
   description = "Enable s3 bucket versioning"

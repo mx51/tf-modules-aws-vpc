@@ -4,16 +4,15 @@ locals {
 
 resource "aws_flow_log" "main" {
   count                = var.enable_vpc_flow_log ? 1 : 0
-  log_destination      = aws_s3_bucket.flow_log[count.index].arn
+  log_destination      = var.send_flow_log_to_external_bucket ? var.flow_log_external_bucket : aws_s3_bucket.flow_log[count.index].arn
   log_destination_type = "s3"
   traffic_type         = "ALL"
   vpc_id               = aws_vpc.main.id
 }
 
 resource "aws_s3_bucket" "flow_log" {
-  count  = var.enable_vpc_flow_log == true ? 1 : 0
-  bucket = local.vpc_bucket_name
-  acl    = "private"
+  count = var.enable_vpc_flow_log == true && var.send_flow_log_to_external_bucket == false ? 1 : 0
+  acl   = "private"
   versioning {
     enabled = var.enable_bucket_versioning
   }
