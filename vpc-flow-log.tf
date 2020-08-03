@@ -4,7 +4,7 @@ locals {
 
 resource "aws_flow_log" "main" {
   count                = var.enable_vpc_flow_log ? 1 : 0
-  log_destination      = var.send_flow_log_to_external_bucket ? "${var.flow_log_external_bucket}/CustomLogs/${data.aws_caller_identity.current.account_id}/vpcflowlogs/${data.aws_region.current.name}/${aws_vpc.main.id}" : aws_s3_bucket.flow_log[count.index].arn
+  log_destination      = var.send_flow_log_to_external_bucket ? "${var.flow_log_external_bucket}/${aws_vpc.main.id}" : aws_s3_bucket.flow_log[count.index].arn
   log_destination_type = "s3"
   traffic_type         = "ALL"
   vpc_id               = aws_vpc.main.id
