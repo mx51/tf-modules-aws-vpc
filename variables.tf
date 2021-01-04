@@ -196,6 +196,12 @@ variable "nacl_allow_all_ssh_egress" {
   default     = false
 }
 
+variable "nacl_allow_all_smtp_egress" {
+  type        = bool
+  description = "Add a rule to all NACLs allowing smtp egress"
+  default     = false
+}
+
 variable "nacl_block_public_to_secure" {
   type        = bool
   description = "Block all traffic between public and secure tiers"
