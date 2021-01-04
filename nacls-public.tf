@@ -200,3 +200,17 @@ resource "aws_network_acl_rule" "public_allow_egress_dns_tcp" {
   from_port   = 53
   to_port     = 53
 }
+
+resource "aws_network_acl_rule" "public_allow_smtp_egress" {
+  count = var.nacl_allow_all_smtp_egress ? 1 : 0
+
+  network_acl_id = aws_network_acl.public.id
+
+  rule_number = 1955
+  egress      = true
+  protocol    = 6
+  rule_action = "allow"
+  cidr_block  = "0.0.0.0/0"
+  from_port   = 25
+  to_port     = 25
+}
