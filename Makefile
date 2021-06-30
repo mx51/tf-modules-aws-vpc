@@ -30,3 +30,8 @@ tfsec:
 readme:
 	docker-compose run --rm terra bash -c "sed -i '1,/<!-- TERRAFORM-DOCS-GENERATION -->/!d' README.md; terraform-docs markdown . >> README.md"
 .PHONY: readme
+
+## Terraform 0.13upgrade
+0.13upgrade:
+	cat .terraform-0.13upgrade.sh | docker-compose run --rm terra bash
+.PHONY: all-readme
