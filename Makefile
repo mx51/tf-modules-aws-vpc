@@ -18,7 +18,7 @@ fmt:
 
 ## Validate with tflint
 lint:
-	docker-compose run --rm terra tflint --module
+	cat .run-tflint.sh | docker-compose run --rm terra bash
 .PHONY: lint
 
 ## Scans all modules for potential security issues
